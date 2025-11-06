@@ -1,0 +1,15 @@
+# Asset Placeholder
+
+This directory should contain the following image assets:
+
+- **icon.png** - App icon (1024x1024px recommended)
+- **splash.png** - Splash screen image
+- **adaptive-icon.png** - Android adaptive icon (1024x1024px)
+- **favicon.png** - Web favicon (48x48px or larger)
+
+These are placeholder files. Replace them with your actual app assets.
+
+You can generate Expo-compatible assets using:
+
+- [Expo Icon Generator](https://icon.kitchen/)
+- Design tools like Figma, Adobe Illustrator, or Canva
