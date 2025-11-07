@@ -12,6 +12,16 @@ import {
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Welcome: undefined;
+  Onboarding: undefined;
+  AiProcess: undefined;
+  Main: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 // Backend API URL - Update this to your backend URL
 const API_URL = 'http://localhost:8000'; // For iOS simulator use: http://localhost:8000
@@ -19,7 +29,7 @@ const API_URL = 'http://localhost:8000'; // For iOS simulator use: http://localh
 // For physical device use: http://YOUR_COMPUTER_IP:8000
 
 const OnboardingPage = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const [isLoading, setIsLoading] = useState(false);
   const [jobLinks, setJobLinks] = useState<string[]>(['', '', '']);
   const [resumeFile, setResumeFile] = useState<any>(null);
@@ -94,16 +104,15 @@ const OnboardingPage = () => {
 
       if (response.ok && result.success) {
         // Navigate to AI Process Page
-        navigation.navigate('AiProcess' as never);
+        navigation.navigate('AiProcess');
       } else {
-        Alert.alert('Error', result.message || 'Failed to process profile');
+        // Navigate to AI Process Page even if backend fails
+        navigation.navigate('AiProcess');
       }
     } catch (error) {
-      console.error('Error processing profile:', error);
-      Alert.alert(
-        'Error',
-        'Failed to connect to server. Please make sure the backend is running.'
-      );
+      console.log('Error processing profile:', error);
+      // Navigate to AI Process Page even if there's an error
+      navigation.navigate('AiProcess');
     } finally {
       setIsLoading(false);
     }

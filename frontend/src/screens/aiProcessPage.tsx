@@ -8,6 +8,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Welcome: undefined;
+  Onboarding: undefined;
+  AiProcess: undefined;
+  Main: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface ProcessStep {
   id: number;
@@ -16,28 +27,23 @@ interface ProcessStep {
 }
 
 const AiProcessPage = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(2);
-  const [funFact, setFunFact] = useState({
-    title: 'Did you know?',
-    text: 'Python was named after the British comedy group Monty Python, not the snake!',
-  });
-
-  const steps: ProcessStep[] = [
+  const [steps, setSteps] = useState<ProcessStep[]>([
     {
       id: 1,
       title: 'Extracting Your Profile Information',
-      status: 'completed',
+      status: 'in-progress',
     },
     {
       id: 2,
       title: 'Analyzing Target Job Requirements',
-      status: 'completed',
+      status: 'pending',
     },
     {
       id: 3,
       title: 'Mapping Your Current Skills',
-      status: 'in-progress',
+      status: 'pending',
     },
     {
       id: 4,
@@ -59,28 +65,54 @@ const AiProcessPage = () => {
       title: 'Finalizing Your Roadmap',
       status: 'pending',
     },
-  ];
+  ]);
+  const [funFact, setFunFact] = useState({
+    title: 'Did you know?',
+    text: 'Python was named after the British comedy group Monty Python, not the snake!',
+  });
 
   useEffect(() => {
-    // Simulate progress
+    const totalSteps = steps.length;
+    const progressPerStep = 100 / totalSteps;
+    let currentProgress = 0;
+    let currentStepIndex = 0;
+
     const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 42) {
-          clearInterval(interval);
-          return 42;
-        }
-        return prev + 1;
-      });
-    }, 100);
+      currentProgress += 1;
+      setProgress(currentProgress);
+
+      // Update step status based on progress
+      const completedStepsCount = Math.floor(currentProgress / progressPerStep);
+      
+      setSteps((prevSteps) =>
+        prevSteps.map((step, index) => {
+          if (index < completedStepsCount) {
+            return { ...step, status: 'completed' };
+          } else if (index === completedStepsCount) {
+            return { ...step, status: 'in-progress' };
+          } else {
+            return { ...step, status: 'pending' };
+          }
+        })
+      );
+
+      // When progress reaches 100%, navigate to Main page
+      if (currentProgress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          navigation.navigate('Main');
+        }, 500);
+      }
+    }, 50);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [navigation]);
 
   const renderStepIcon = (status: string) => {
     if (status === 'completed') {
       return (
         <View style={styles.stepIconCompleted}>
-          <Ionicons name="checkmark" size={24} color="#5B8DEF" />
+          <Ionicons name="checkmark" size={20} color="#5B8DEF" />
         </View>
       );
     } else if (status === 'in-progress') {
@@ -100,27 +132,17 @@ const AiProcessPage = () => {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Building Your Path</Text>
         <View style={styles.headerSpacer} />
       </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Progress Circle */}
-        <View style={styles.progressCircleContainer}>
-          <View style={styles.progressCircleOuter}>
-            <View style={styles.progressCircle}>
-              <Ionicons name="settings" size={64} color="#5B8DEF" />
-            </View>
-          </View>
-        </View>
-
+      <View style={styles.content}>
         {/* Overall Progress */}
         <View style={styles.progressSection}>
           <View style={styles.progressHeader}>
@@ -138,9 +160,6 @@ const AiProcessPage = () => {
             <View key={step.id} style={styles.stepRow}>
               <View style={styles.stepIndicatorContainer}>
                 {renderStepIcon(step.status)}
-                {index < steps.length - 1 && (
-                  <View style={styles.stepConnector} />
-                )}
               </View>
               <Text
                 style={[
@@ -158,14 +177,14 @@ const AiProcessPage = () => {
         {/* Fun Fact Card */}
         <View style={styles.funFactCard}>
           <View style={styles.funFactIcon}>
-            <Ionicons name="bulb" size={32} color="#5B8DEF" />
+            <Ionicons name="bulb" size={28} color="#5B8DEF" />
           </View>
           <View style={styles.funFactContent}>
             <Text style={styles.funFactTitle}>{funFact.title}</Text>
             <Text style={styles.funFactText}>{funFact.text}</Text>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -199,36 +218,14 @@ const styles = StyleSheet.create({
   headerSpacer: {
     width: 40,
   },
-  scrollView: {
+  content: {
     flex: 1,
-  },
-  scrollContent: {
     paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  progressCircleContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  progressCircleOuter: {
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    backgroundColor: 'rgba(91, 141, 239, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  progressCircle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(91, 141, 239, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   progressSection: {
-    marginBottom: 40,
+    marginBottom: 25,
   },
   progressHeader: {
     flexDirection: 'row',
@@ -258,22 +255,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stepsContainer: {
-    marginBottom: 40,
+    marginBottom: 20,
   },
   stepRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 0,
+    alignItems: 'center',
+    marginBottom: 12,
   },
   stepIndicatorContainer: {
     alignItems: 'center',
-    marginRight: 16,
-    paddingTop: 2,
+    marginRight: 12,
   },
   stepIconCompleted: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: 'rgba(91, 141, 239, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -281,25 +277,25 @@ const styles = StyleSheet.create({
     borderColor: '#5B8DEF',
   },
   stepIconInProgress: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: '#5B8DEF',
   },
   stepIconInProgressInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: '#5B8DEF',
   },
   stepIconPending: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#1A2332',
     borderWidth: 2,
     borderColor: '#2A3A4A',
@@ -312,9 +308,9 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: '#FFFFFF',
-    lineHeight: 44,
+    lineHeight: 20,
   },
   stepTitleActive: {
     color: '#5B8DEF',
@@ -326,32 +322,32 @@ const styles = StyleSheet.create({
   funFactCard: {
     flexDirection: 'row',
     backgroundColor: '#0F1923',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
     borderWidth: 1,
     borderColor: '#1A2A3A',
   },
   funFactIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(91, 141, 239, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   funFactContent: {
     flex: 1,
   },
   funFactTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   funFactText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#9CA3AF',
-    lineHeight: 20,
+    lineHeight: 18,
   },
 });

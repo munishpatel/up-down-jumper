@@ -6,11 +6,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import OnboardingPage from './src/screens/onboardingPage';
 import AiProcessPage from './src/screens/aiProcessPage';
+import MainPage from './src/screens/mainPage';
 
 type RootStackParamList = {
   Welcome: undefined;
   Onboarding: undefined;
   AiProcess: undefined;
+  Main: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -82,6 +84,11 @@ const App: FC = () => {
         <Stack.Screen
           name="AiProcess"
           component={AiProcessPage}
+          options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={MainPage}
           options={{ animation: 'fade' }}
         />
       </Stack.Navigator>
