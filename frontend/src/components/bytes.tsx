@@ -1,36 +1,186 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
+  Dimensions,
+  ViewToken,
 } from 'react-native';
+import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import SideMenu from './sideMenu';
 import Tasks from './tasks';
+
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Calculate heights for proper video sizing
+const HEADER_HEIGHT = 103; // paddingTop (60) + paddingBottom (15) + content (28)
+const TAB_BAR_HEIGHT = 90; // From dashboard.tsx tabBarStyle
+const VIDEO_HEIGHT = SCREEN_HEIGHT - HEADER_HEIGHT - TAB_BAR_HEIGHT;
+
+// Video data
+const videos = [
+  {
+    id: '1',
+    uri: require('../../assets/video1.mp4'),
+    title: 'Learning Byte 1',
+    description: 'Quick learning content',
+  },
+  {
+    id: '2',
+    uri: require('../../assets/video2.mp4'),
+    title: 'Learning Byte 2',
+    description: 'Micro-lesson content',
+  },
+  {
+    id: '3',
+    uri: require('../../assets/video3.mp4'),
+    title: 'Learning Byte 3',
+    description: 'Educational snippet',
+  },
+];
+
+interface VideoItemProps {
+  item: typeof videos[0];
+  isActive: boolean;
+  videoRef: React.RefObject<Video | null>;
+}
+
+const VideoItem: React.FC<VideoItemProps> = ({ item, isActive, videoRef }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (isActive) {
+      videoRef.current?.setIsMutedAsync(false).catch(() => {});
+      videoRef.current?.playAsync().catch(() => {});
+      setIsPlaying(true);
+    } else {
+      videoRef.current?.pauseAsync().catch(() => {});
+      setIsPlaying(false);
+    }
+  }, [isActive, videoRef]);
+
+  // Cleanup: pause and unload video when component unmounts
+  useEffect(() => {
+    return () => {
+      videoRef.current?.pauseAsync().catch(() => {});
+      videoRef.current?.setIsMutedAsync(true).catch(() => {});
+      videoRef.current?.unloadAsync().catch(() => {});
+    };
+  }, [videoRef]);
+
+  const handlePlayPause = async () => {
+    if (isPlaying) {
+      await videoRef.current?.pauseAsync();
+      setIsPlaying(false);
+    } else {
+      await videoRef.current?.playAsync();
+      setIsPlaying(true);
+    }
+  };
+
+  return (
+    <View style={styles.videoContainer}>
+      <Video
+        ref={videoRef}
+        source={item.uri}
+        style={styles.video}
+        resizeMode={ResizeMode.COVER}
+        isLooping
+        shouldPlay={isActive}
+      />
+      
+      {/* Overlay gradient */}
+      <LinearGradient
+        colors={['transparent', 'rgba(0,0,0,0.7)']}
+        style={styles.overlay}
+      />
+
+      {/* Play/Pause button */}
+      <TouchableOpacity 
+        style={styles.playPauseButton}
+        onPress={handlePlayPause}
+        activeOpacity={0.7}
+      >
+        {!isPlaying && (
+          <Ionicons name="play" size={60} color="rgba(255,255,255,0.8)" />
+        )}
+      </TouchableOpacity>
+
+      {/* Video info */}
+      <View style={styles.videoInfo}>
+        <Text style={styles.videoTitle}>{item.title}</Text>
+        <Text style={styles.videoDescription}>{item.description}</Text>
+      </View>
+
+      {/* Side actions */}
+      <View style={styles.sideActions}>
+        <TouchableOpacity style={styles.actionButton}>
+          <Ionicons name="heart-outline" size={32} color="#FFFFFF" />
+          <Text style={styles.actionText}>Like</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionButton}>
+          <Ionicons name="chatbubble-outline" size={32} color="#FFFFFF" />
+          <Text style={styles.actionText}>Comment</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionButton}>
+          <Ionicons name="share-outline" size={32} color="#FFFFFF" />
+          <Text style={styles.actionText}>Share</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
 const Bytes = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [tasksVisible, setTasksVisible] = useState(false);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(true);
+  
+  // Create refs for all videos
+  const videoRefs = useRef<Array<React.RefObject<Video | null>>>(
+    videos.map(() => React.createRef<Video | null>())
+  );
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (viewableItems.length > 0) {
+      setActiveVideoIndex(viewableItems[0].index ?? 0);
+    }
+  }).current;
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+  }).current;
+
+  // Pause all videos when screen loses focus
+  useFocusEffect(
+    useCallback(() => {
+      // Screen is focused
+      setIsFocused(true);
+      
+      return () => {
+        // Screen is unfocused - pause all videos immediately
+        setIsFocused(false);
+        videoRefs.current.forEach((ref) => {
+          if (ref.current) {
+            ref.current.pauseAsync().catch(() => {});
+            ref.current.setIsMutedAsync(true).catch(() => {});
+          }
+        });
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#1a1a2e', '#16213e', '#0f3460']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      <LinearGradient
-        colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      
       <StatusBar style="light" />
       
       {/* Header */}
@@ -42,6 +192,8 @@ const Bytes = () => {
           <Ionicons name="menu" size={28} color="#FFFFFF" />
         </TouchableOpacity>
         
+        <Text style={styles.headerTitle}>Bytes</Text>
+        
         <TouchableOpacity 
           style={styles.tasksButton}
           onPress={() => setTasksVisible(true)}
@@ -50,31 +202,26 @@ const Bytes = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Content */}
-      <ScrollView 
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <Text style={styles.title}>Bytes</Text>
-        <Text style={styles.subtitle}>
-          Quick learning content and micro-lessons
-        </Text>
-        
-        {/* Placeholder content */}
-        <View style={styles.emptyState}>
-          <LinearGradient
-            colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+      {/* Video List */}
+      <FlatList
+        data={videos}
+        renderItem={({ item, index }) => (
+          <VideoItem 
+            item={item} 
+            isActive={index === activeVideoIndex && isFocused} 
+            videoRef={videoRefs.current[index]}
           />
-          <Ionicons name="play-circle-outline" size={80} color="#06b6d4" />
-          <Text style={styles.emptyText}>No bytes available yet</Text>
-          <Text style={styles.emptySubtext}>
-            Your personalized learning bytes will appear here
-          </Text>
-        </View>
-      </ScrollView>
+        )}
+        keyExtractor={(item) => item.id}
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        snapToInterval={VIDEO_HEIGHT}
+        snapToAlignment="start"
+        decelerationRate="fast"
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+      />
 
       {/* Side Menu */}
       <SideMenu 
@@ -96,16 +243,26 @@ export default Bytes;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000000',
   },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(6, 182, 212, 0.2)',
+    paddingBottom: 15,
+    zIndex: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#06b6d4',
   },
   menuButton: {
     width: 40,
@@ -119,45 +276,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
-    flex: 1,
+  videoContainer: {
+    width: SCREEN_WIDTH,
+    height: VIDEO_HEIGHT,
+    backgroundColor: '#000000',
   },
-  contentContainer: {
-    padding: 20,
+  video: {
+    width: '100%',
+    height: '100%',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#06b6d4',
-    marginBottom: 8,
-    textShadowColor: 'rgba(6, 182, 212, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+  overlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '40%',
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#9ca3af',
-    marginBottom: 40,
-  },
-  emptyState: {
+  playPauseButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -30 }, { translateY: -30 }],
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(6, 182, 212, 0.2)',
-    overflow: 'hidden',
   },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
+  videoInfo: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 80,
+  },
+  videoTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#FFFFFF',
-    marginTop: 20,
+    marginBottom: 8,
   },
-  emptySubtext: {
+  videoDescription: {
     fontSize: 14,
-    color: '#6b7280',
-    marginTop: 8,
-    textAlign: 'center',
+    color: '#E5E7EB',
+  },
+  sideActions: {
+    position: 'absolute',
+    right: 15,
+    bottom: 20,
+    gap: 25,
+  },
+  actionButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    marginTop: 5,
   },
 });

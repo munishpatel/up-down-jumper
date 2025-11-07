@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import OnboardingPage from './src/screens/onboardingPage';
 import AiProcessPage from './src/screens/aiProcessPage';
 import MainPage from './src/screens/mainPage';
@@ -44,7 +44,11 @@ const WelcomeScreen: FC<{ navigation: any }> = ({ navigation }) => {
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>↑↓</Text>
+            <Image 
+              source={require('./assets/logo.png')} 
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
         </View>
 
@@ -59,7 +63,7 @@ const WelcomeScreen: FC<{ navigation: any }> = ({ navigation }) => {
           <Text style={styles.aiBadgeText}>AI-Powered Upskilling Application</Text>
         </View>
 
-        <Text style={styles.title}>Up Down Jumper</Text>
+        <Text style={styles.title}>VOLO</Text>
 
         <Text style={styles.subtitle}>Do you want to upskill yourself?</Text>
 
@@ -140,9 +144,9 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   iconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     backgroundColor: 'rgba(6, 182, 212, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -152,14 +156,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    padding: 15,
   },
-  iconText: {
-    fontSize: 48,
-    color: '#fff',
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(6, 182, 212, 0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+  logoImage: {
+    width: 80,
+    height: 80,
+    tintColor: '#06b6d4',
   },
   aiBadge: {
     flexDirection: 'row',
