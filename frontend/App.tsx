@@ -7,12 +7,14 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import OnboardingPage from './src/screens/onboardingPage';
 import AiProcessPage from './src/screens/aiProcessPage';
 import MainPage from './src/screens/mainPage';
+import Dashboard from './src/screens/dashboard';
 
 type RootStackParamList = {
   Welcome: undefined;
   Onboarding: undefined;
   AiProcess: undefined;
   Main: undefined;
+  Dashboard: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -89,6 +91,11 @@ const App: FC = () => {
         <Stack.Screen
           name="Main"
           component={MainPage}
+          options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
           options={{ animation: 'fade' }}
         />
       </Stack.Navigator>

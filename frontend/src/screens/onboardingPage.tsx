@@ -19,6 +19,7 @@ type RootStackParamList = {
   Onboarding: undefined;
   AiProcess: undefined;
   Main: undefined;
+  Dashboard: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

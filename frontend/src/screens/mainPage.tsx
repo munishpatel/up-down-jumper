@@ -15,6 +15,7 @@ type RootStackParamList = {
   Onboarding: undefined;
   AiProcess: undefined;
   Main: undefined;
+  Dashboard: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -52,6 +53,7 @@ const MainPage = () => {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.8}
+          onPress={() => navigation.navigate('Dashboard')}
         >
           <Text style={styles.buttonText}>View My Roadmap</Text>
         </TouchableOpacity>
