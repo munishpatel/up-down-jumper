@@ -57,13 +57,13 @@ async def create_onboarding(
         
         # 5. Prepare data for N8N
         onboarding_payload = {
-            "user_id": user.id,
-            "email": email,
-            "full_name": full_name,
+            # "user_id": user.id,
+            # "email": email,
+            # "full_name": full_name,
             "job_link": job_link,
             "job_duration": job_duration,
             "daily_commitment": daily_commitment,
-            "resume_version": "v1.0"
+            "resume_content":resume
         }
         
         # 6. Trigger N8N workflow
