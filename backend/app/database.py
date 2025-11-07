@@ -1,43 +1,32 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.pool import StaticPool
 import os
 
-# Create database directory if it doesn't exist
-db_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
-os.makedirs(db_dir, exist_ok=True)
+# Database URL
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./volo.db")
 
-# SQLite database
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(db_dir, 'onboarding.db')}"
+# SQLite specific engine configuration
+if "sqlite" in DATABASE_URL:
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+else:
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
-
-class OnboardingProfile(Base):
-    __tablename__ = "onboarding_profiles"
-
-    id = Column(Integer, primary_key=True, index=True)
-    job_link = Column(String, nullable=False)
-    resume_filename = Column(String, nullable=False)
-    resume_content = Column(Text, nullable=True)
-    job_duration = Column(String, nullable=False)
-    daily_commitment = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-
 def get_db():
+    """Dependency to get database session"""
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+def init_db():
+    """Initialize database tables"""
+    Base.metadata.create_all(bind=engine)

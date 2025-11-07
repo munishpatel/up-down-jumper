@@ -1,253 +1,194 @@
-# Up Down Jumper - Backend API
+# Volo Backend - FastAPI
 
-FastAPI backend for the Up Down Jumper upskilling application.
+FastAPI backend for Volo job search upskilling platform with React Native/Expo frontend integration.
 
-## Features
+## 🚀 Quick Start
 
-- RESTful API for onboarding profile management
-- SQLite local database for data persistence
-- File upload support for resumes (PDF format)
-- CORS enabled for frontend communication
-
-## Tech Stack
-
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - SQL toolkit and ORM
-- **SQLite** - Lightweight database
-- **Uvicorn** - ASGI server
-- **Pydantic** - Data validation
-
-## Project Structure
-
-```
-backend/
-├── app/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI application entry point
-│   ├── database.py          # Database configuration and models
-│   └── api/
-│       └── v1/
-│           ├── router.py    # API router configuration
-│           └── endpoints/
-│               └── onboarding.py  # Onboarding endpoints
-├── data/                    # Database files (auto-created)
-│   └── onboarding.db
-├── requirements.txt         # Python dependencies
-├── start.sh                # Start script
-└── README.md
-```
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package manager)
-
-### Setup
-
-1. **Navigate to backend directory:**
-
-   ```bash
-   cd backend
-   ```
-
-2. **Create a virtual environment (recommended):**
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On macOS/Linux
-   # OR
-   venv\Scripts\activate  # On Windows
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Running the Server
-
-### Option 1: Using the start script (macOS/Linux)
+### 1. Setup Virtual Environment
 
 ```bash
-chmod +x start.sh
-./start.sh
+# Create virtual environment
+python3 -m venv venv
+
+# Activate it
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### Option 2: Manual start
+### 2. Install Dependencies
 
 ```bash
-# Make sure virtual environment is activated
-source venv/bin/activate  # On macOS/Linux
+pip install -r requirements.txt
+```
 
-# Start the server
+### 3. Run Server
+
+```bash
+# Using start script
+bash start.sh
+
+# Or manually
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The API will be available at:
+Server will be available at: `http://localhost:8000`
 
-- **Local:** http://localhost:8000
-- **Network:** http://0.0.0.0:8000
-
-### API Documentation
-
-Once the server is running, access the interactive API documentation:
-
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
-
-## API Endpoints
+## 📚 API Endpoints
 
 ### Health Check
-
 ```
 GET /health
 ```
 
-Returns server health status.
-
-### Create Onboarding Profile
-
+### Onboarding Submission
 ```
 POST /api/v1/onboarding
-Content-Type: multipart/form-data
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "full_name": "John Doe",
+  "phone": "+1234567890",
+  "current_role": "Junior Developer",
+  "target_role": "Senior Data Scientist",
+  "job_links": ["https://job1.com", "https://job2.com"],
+  "get_job_in_months": 6,
+  "daily_time_commitment": 2.5,
+  "learning_style": "hands-on",
+  "career_transition": "Career Switch",
+  "budget": 500.0,
+  "resume_content": "...",
+  "resume_version": "v1.0",
+  "file_type": "pdf"
+}
 ```
 
-**Parameters:**
-
-- `job_link` (string, required) - Job description URL
-- `job_duration` (string, required) - Target duration to get a job (e.g., "3 months")
-- `daily_commitment` (string, required) - Daily learning commitment (e.g., "2 hours")
-- `resume` (file, required) - Resume PDF file
-
 **Response:**
-
 ```json
 {
-  "success": true,
-  "message": "Profile created successfully",
-  "profile_id": 1,
+  "status": "success",
+  "message": "Onboarding completed successfully",
+  "user_id": 1,
+  "onboarding_id": 1,
+  "analysis": {
+    // N8N workflow dummy response
+  },
   "data": {
-    "id": 1,
-    "job_link": "https://example.com/job",
-    "resume_filename": "resume.pdf",
-    "job_duration": "3 months",
-    "daily_commitment": "2 hours",
-    "created_at": "2025-11-06T12:00:00"
+    "user": {...},
+    "resume": {...}
   }
 }
 ```
 
-### Get Onboarding Profile
-
+### Get User Onboarding Record
 ```
-GET /api/v1/onboarding/{profile_id}
-```
-
-Returns a specific profile by ID.
-
-### Get All Profiles
-
-```
-GET /api/v1/onboarding
+GET /api/v1/onboarding/{user_id}
 ```
 
-Returns all onboarding profiles.
+### Get Latest Resume
+```
+GET /api/v1/user/{user_id}/resume
+```
 
-## Database
+## 🗄️ Database
 
-The application uses SQLite for local data storage. The database file is automatically created at `backend/data/onboarding.db`.
+SQLite database (local development)
 
-### Database Schema
+**Location:** `./volo.db`
 
-**onboarding_profiles** table:
+**Tables:**
+- `users` - User profiles
+- `onboarding_records` - Onboarding data
+- `resumes` - Resume versions
 
-- `id` (INTEGER) - Primary key
-- `job_link` (STRING) - Job description URL
-- `resume_filename` (STRING) - Original filename of uploaded resume
-- `resume_content` (TEXT) - Base64 encoded resume content
-- `job_duration` (STRING) - Target job acquisition duration
-- `daily_commitment` (STRING) - Daily learning commitment
-- `created_at` (DATETIME) - Timestamp of profile creation
+## 📋 Project Structure
 
-## Development
+```
+backend/
+├── app/
+│   ├── main.py           # FastAPI entry point
+│   ├── database.py       # Database configuration
+│   ├── models.py         # SQLAlchemy models
+│   ├── schemas.py        # Pydantic schemas
+│   ├── utils.py          # Helper functions (N8N integration)
+│   └── routes/
+│       └── onboarding.py # Onboarding endpoints
+├── requirements.txt      # Dependencies
+├── .env.example         # Environment template
+├── start.sh             # Startup script
+└── README.md
+```
 
-### Running in Development Mode
+## 🔌 N8N Integration
 
-The `--reload` flag enables auto-reload on code changes:
+Currently returns dummy JSON responses. To connect to real N8N:
+
+1. Update `app/utils.py` - `trigger_n8n_workflow()` function
+2. Replace dummy response with actual HTTP call to N8N webhook
+3. Set `N8N_WEBHOOK_URL` in `.env`
+
+## 🔐 Environment Variables
+
+Copy `.env.example` to `.env` and configure:
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+cp .env.example .env
 ```
 
-### Testing the API
+## 📱 React Native/Expo Integration
 
-You can test the API using:
+Frontend should send POST request to:
 
-1. **Swagger UI** (http://localhost:8000/docs)
-2. **curl:**
-   ```bash
-   curl -X POST "http://localhost:8000/api/v1/onboarding" \
-     -F "job_link=https://example.com/job" \
-     -F "job_duration=3 months" \
-     -F "daily_commitment=2 hours" \
-     -F "resume=@/path/to/resume.pdf"
-   ```
-3. **Postman** or any other API client
-
-## Troubleshooting
-
-### Port Already in Use
-
-If port 8000 is already in use, specify a different port:
-
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
+```
+http://your-backend-url:8000/api/v1/onboarding
 ```
 
-Don't forget to update the `API_URL` in the frontend accordingly.
+Example with Fetch API:
 
-### CORS Issues
+```javascript
+const response = await fetch('http://localhost:8000/api/v1/onboarding', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    full_name: 'John Doe',
+    // ... other fields
+  })
+});
 
-If you encounter CORS errors, verify that the frontend origin is allowed in `app/main.py`. Currently, all origins are allowed (`allow_origins=["*"]`).
-
-### Database Locked
-
-If you get a "database is locked" error, ensure no other process is accessing the database file.
-
-## Production Deployment
-
-For production deployment, consider:
-
-1. **Use a production-grade database** (PostgreSQL, MySQL)
-2. **Remove `--reload` flag**
-3. **Configure proper CORS origins**
-4. **Add authentication and authorization**
-5. **Use environment variables for configuration**
-6. **Set up proper logging**
-7. **Use a production ASGI server** (Gunicorn + Uvicorn workers)
-
-Example production command:
-
-```bash
-gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+const data = await response.json();
 ```
 
-## Environment Variables
+## 🛠️ Development
 
-Create a `.env` file for configuration (optional):
+API Documentation available at:
+- **Swagger UI:** `http://localhost:8000/docs`
+- **ReDoc:** `http://localhost:8000/redoc`
 
-```env
-DATABASE_URL=sqlite:///./data/onboarding.db
-API_PORT=8000
-CORS_ORIGINS=["http://localhost:8081", "exp://localhost:8081"]
-```
+## 📦 Dependencies
 
-## License
+- **FastAPI** - Web framework
+- **SQLAlchemy** - ORM
+- **Pydantic** - Data validation
+- **Uvicorn** - ASGI server
+
+## ⚠️ Notes
+
+- Currently using SQLite for local development
+- N8N integration uses dummy responses (update for production)
+- CORS is open to all origins (configure for production)
+- Resume content stored as text (consider file storage service for production)
+
+## 🚨 Firebase Alternative?
+
+SQLite is sufficient for local development and MVP. For production, consider:
+- **PostgreSQL** for scalability
+- **Firebase** for serverless (easy deployment, built-in auth)
+- **MongoDB** for flexibility
+
+To switch databases, only update `DATABASE_URL` in `.env` file.
+
+## 📝 License
 
 MIT
-
-## Support
-
-For issues or questions, please open an issue in the repository.

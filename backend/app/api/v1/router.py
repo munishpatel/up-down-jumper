@@ -1,10 +1,8 @@
 from fastapi import APIRouter
-from .endpoints import onboarding
+from app.api.v1.endpoints import onboarding
 
-api_router = APIRouter()
+# Create main router
+router = APIRouter()
 
-api_router.include_router(
-    onboarding.router,
-    prefix="/api/v1",
-    tags=["onboarding"]
-)
+# Include endpoint routers
+router.include_router(onboarding.router, tags=["onboarding"])

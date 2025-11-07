@@ -1,19 +1,25 @@
 #!/bin/bash
 
-# Navigate to backend directory
-cd "$(dirname "$0")"
+# Volo Backend Startup Script
 
-# Install dependencies if not already installed
+echo "🚀 Starting Volo Backend..."
+
+# Check if virtual environment exists
 if [ ! -d "venv" ]; then
-    echo "Creating virtual environment..."
+    echo "📦 Creating virtual environment..."
     python3 -m venv venv
 fi
 
-echo "Activating virtual environment..."
+# Activate virtual environment
 source venv/bin/activate
 
-echo "Installing dependencies..."
+# Install dependencies
+echo "📚 Installing dependencies..."
 pip install -r requirements.txt
 
-echo "Starting FastAPI server..."
+# Run migrations if needed
+echo "🗄️  Initializing database..."
+
+# Start the server
+echo "✅ Starting FastAPI server on http://localhost:8000"
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
