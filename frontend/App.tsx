@@ -8,6 +8,7 @@ import OnboardingPage from './src/screens/onboardingPage';
 import AiProcessPage from './src/screens/aiProcessPage';
 import MainPage from './src/screens/mainPage';
 import Dashboard from './src/screens/dashboard';
+import EventDetailsPage from './src/screens/eventDetailsPage';
 
 type RootStackParamList = {
   Welcome: undefined;
@@ -15,6 +16,7 @@ type RootStackParamList = {
   AiProcess: undefined;
   Main: undefined;
   Dashboard: undefined;
+  EventDetails: { event: any };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -121,6 +123,11 @@ const App: FC = () => {
           name="Dashboard"
           component={Dashboard}
           options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="EventDetails"
+          component={EventDetailsPage}
+          options={{ animation: 'slide_from_right' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

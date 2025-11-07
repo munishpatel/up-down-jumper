@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Bytes from '../components/bytes';
 import Courses from '../components/courses';
@@ -8,6 +9,12 @@ import Events from '../components/events';
 import Projects from '../components/projects';
 
 const Tab = createBottomTabNavigator();
+
+// Wrapper component to pass navigation to Events
+const EventsScreen = () => {
+  const navigation = useNavigation();
+  return <Events navigation={navigation} />;
+};
 
 const Dashboard = () => {
   return (
@@ -59,7 +66,7 @@ const Dashboard = () => {
       />
       <Tab.Screen
         name="Events"
-        component={Events}
+        component={EventsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="git-network" size={size} color={color} />
