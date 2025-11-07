@@ -70,9 +70,9 @@ const OnboardingPage = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome Jumper!</Text>
+          <Text style={styles.title}>Welcome, Volant!</Text>
           <Text style={styles.subtitle}>
-             Start by telling us what you're looking for.
+             Ready to Volo? Start by telling us more about you.
           </Text>
         </View>
 
