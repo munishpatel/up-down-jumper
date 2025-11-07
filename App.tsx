@@ -1,12 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
 import type { FC } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import OnboardingPage from './src/screens/onboardingPage';
 
-const App: FC = () => {
+type RootStackParamList = {
+  Welcome: undefined;
+  Onboarding: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const WelcomeScreen: FC<{ navigation: any }> = ({ navigation }) => {
   const handleGetStarted = () => {
-    console.log('Get Started pressed!');
-    // Add navigation or next screen logic here
+    navigation.navigate('Onboarding');
   };
 
   return (
@@ -17,41 +26,59 @@ const App: FC = () => {
       style={styles.container}
     >
       <StatusBar style="light" />
-      
+
       <View style={styles.content}>
-        {/* Logo/Icon Area */}
         <View style={styles.iconContainer}>
           <View style={styles.iconCircle}>
             <Text style={styles.iconText}>↑↓</Text>
           </View>
         </View>
 
-        {/* AI Badge */}
         <View style={styles.aiBadge}>
           <Text style={styles.aiIcon}>⚡</Text>
           <Text style={styles.aiBadgeText}>AI-Powered Upskilling Application</Text>
         </View>
 
-        {/* Title */}
         <Text style={styles.title}>Up Down Jumper</Text>
-        
-        {/* Subtitle */}
+
         <Text style={styles.subtitle}>Do you want to upskill yourself?</Text>
 
-        {/* Get Started Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.button}
           onPress={handleGetStarted}
           activeOpacity={0.8}
         >
-          <Text style={styles.buttonText}>Get Started</Text>
+          <Text style={styles.buttonText}>GET STARTED</Text>
         </TouchableOpacity>
 
-        {/* Decorative Elements */}
         <View style={styles.decorativeCircle1} />
         <View style={styles.decorativeCircle2} />
       </View>
     </LinearGradient>
+  );
+};
+
+const App: FC = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Welcome"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingPage}
+          options={{ animation: 'fade' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
@@ -85,7 +112,6 @@ const styles = StyleSheet.create({
     fontSize: 48,
     color: '#fff',
     fontWeight: 'bold',
-    fontFamily: 'System',
   },
   aiBadge: {
     flexDirection: 'row',
@@ -108,7 +134,6 @@ const styles = StyleSheet.create({
     color: '#5FC9F8',
     fontWeight: '600',
     letterSpacing: 0.5,
-    fontFamily: 'System',
   },
   title: {
     fontSize: 42,
@@ -120,7 +145,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 10,
-    fontFamily: 'System',
   },
   subtitle: {
     fontSize: 20,
@@ -131,7 +155,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 28,
     paddingHorizontal: 20,
-    fontFamily: 'System',
   },
   button: {
     backgroundColor: '#fff',
@@ -149,8 +172,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     letterSpacing: 1,
-    textTransform: 'uppercase',
-    fontFamily: 'System',
   },
   decorativeCircle1: {
     position: 'absolute',
