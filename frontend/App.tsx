@@ -265,7 +265,7 @@ const WelcomeScreen: FC<{ navigation: any }> = ({ navigation }) => {
             <Text style={styles.title}>VOLO</Text>
           </LinearGradient>
           <Text style={styles.subtitle}>
-            Master new skills with{'\n'}AI-driven personalized learning
+            Transform Chaotic Upskilling{'\n'}to Strategic Career Launch
           </Text>
         </Animated.View>
 
@@ -501,6 +501,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textAlign: 'center',
     letterSpacing: 2,
+    color: '#ffffff',
   },
   subtitle: {
     fontSize: 18,

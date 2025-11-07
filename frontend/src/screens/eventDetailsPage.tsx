@@ -151,7 +151,7 @@ const EventDetailsPage: React.FC<EventDetailsPageProps> = ({ navigation, route }
               </TouchableOpacity>
             </View>
             <Text style={styles.connectionsText}>
-              Add connections you'd like to meet at this event
+              Add connections who you meet at this event
             </Text>
           </LinearGradient>
         </View>

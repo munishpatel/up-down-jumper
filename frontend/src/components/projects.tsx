@@ -18,8 +18,7 @@ interface Project {
   subtitle?: string;
   description?: string;
   skills: string;
-  timeSpent: string;
-  teammates: string;
+  metrics: string[];
 }
 
 const Projects = () => {
@@ -33,24 +32,36 @@ const Projects = () => {
       title: 'RAG Model for Local-first Web',
       subtitle: 'The Build Fellowship "Build Projects"',
       skills: 'GenAI, RAG, PWA, CRDT\'s',
-      timeSpent: '20hrs',
-      teammates: 'Shivaji, Ruthwik',
+      metrics: [
+        'Query Execution Time',
+        'Memory Processing',
+        'Team Members',
+        'I/O Reduction',
+      ],
     },
     {
       id: '2',
       title: 'Fine-tuning LLM Model with PEFT',
       subtitle: 'MLH (Major League Hacking)',
       skills: 'OpenAI, qLoRA, PEFT, Unsloth',
-      timeSpent: '20hrs',
-      teammates: 'Shivaji, Ruthwik',
+      metrics: [
+        'Parameters Optimized',
+        'Memory Processing',
+        'CPU Improved',
+        'Team Members',
+      ],
     },
     {
       id: '3',
       title: 'CloudMart',
       subtitle: 'Excalidraw.io',
       skills: 'Hadoop, EC2, Cloud Runner, AWS',
-      timeSpent: '20hrs',
-      teammates: 'Shivaji, Ruthwik',
+      metrics: [
+        'Query Execution Time',
+        'I/O Reduction',
+        'CPU Improved',
+        'Team Members',
+      ],
     },
   ];
 
@@ -129,19 +140,14 @@ const Projects = () => {
               
               {/* Metrics Section */}
               <View style={styles.metricsSection}>
-                <Text style={styles.metricsTitle}>Metrics:</Text>
+                <Text style={styles.metricsTitle}>Impact Metrics:</Text>
                 
-                <View style={styles.metricItem}>
-                  <Text style={styles.metricNumber}>1. </Text>
-                  <Text style={styles.metricLabel}>Time Spent: </Text>
-                  <Text style={styles.metricValue}>{project.timeSpent}</Text>
-                </View>
-                
-                <View style={styles.metricItem}>
-                  <Text style={styles.metricNumber}>2. </Text>
-                  <Text style={styles.metricLabel}>Teammates: </Text>
-                  <Text style={styles.metricValue}>{project.teammates}</Text>
-                </View>
+                {project.metrics.map((metric, index) => (
+                  <View key={index} style={styles.metricItem}>
+                    <Text style={styles.metricNumber}>{index + 1}. </Text>
+                    <Text style={styles.metricValue}>{metric}</Text>
+                  </View>
+                ))}
               </View>
             </View>
           </TouchableOpacity>
@@ -261,18 +267,19 @@ const styles = StyleSheet.create({
   },
   metricItem: {
     flexDirection: 'row',
-    marginBottom: 4,
+    marginBottom: 6,
+    alignItems: 'flex-start',
   },
   metricNumber: {
     fontSize: 14,
-    color: '#d1d5db',
-  },
-  metricLabel: {
-    fontSize: 14,
-    color: '#d1d5db',
+    color: '#06b6d4',
+    fontWeight: '600',
+    marginRight: 4,
   },
   metricValue: {
     fontSize: 14,
     color: '#d1d5db',
+    flex: 1,
+    lineHeight: 20,
   },
 });

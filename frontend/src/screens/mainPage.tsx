@@ -59,7 +59,7 @@ const MainPage = () => {
           <Ionicons name="checkmark-circle" size={100} color="#06b6d4" />
         </View>
         
-        <Text style={styles.title}>Roadmap Ready!</Text>
+        <Text style={styles.title}>Personalization Complete!</Text>
         <Text style={styles.subtitle}>
           Your personalized learning path has been created successfully.
         </Text>
@@ -74,7 +74,7 @@ const MainPage = () => {
             end={{ x: 1, y: 0 }}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>View My Roadmap</Text>
+            <Text style={styles.buttonText}>Let's VOLO!!!</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
