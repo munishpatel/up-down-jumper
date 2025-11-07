@@ -1,0 +1,7 @@
+# Backend Data Directory
+
+This directory stores the SQLite database file for the application.
+
+- `onboarding.db` - SQLite database containing onboarding profiles
+
+This directory is automatically managed by the application and should not be deleted.

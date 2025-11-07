@@ -8,10 +8,19 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import { useNavigation } from '@react-navigation/native';
+
+// Backend API URL - Update this to your backend URL
+const API_URL = 'http://localhost:8000'; // For iOS simulator use: http://localhost:8000
+// For Android emulator use: http://10.0.2.2:8000
+// For physical device use: http://YOUR_COMPUTER_IP:8000
 
 const OnboardingPage = () => {
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const [jobLinks, setJobLinks] = useState<string[]>(['', '', '']);
   const [resumeFile, setResumeFile] = useState<any>(null);
   const [jobDuration, setJobDuration] = useState('3');
@@ -38,7 +47,8 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleProcessProfile = () => {
+  const handleProcessProfile = async () => {
+    // Validation
     if (!jobLinks[0]) {
       Alert.alert('Error', 'Please enter at least one job link');
       return;
@@ -52,13 +62,51 @@ const OnboardingPage = () => {
       return;
     }
 
-    console.log('Processing profile...', {
-      jobLinks: jobLinks.filter(link => link !== ''),
-      resume: resumeFile?.name,
-      jobDuration,
-      dailyCommitment,
-    });
-    Alert.alert('Success', 'Profile processing started!');
+    setIsLoading(true);
+
+    try {
+      // Create FormData for multipart/form-data request
+      const formData = new FormData();
+      
+      // Add the first job link (required)
+      formData.append('job_link', jobLinks[0]);
+      formData.append('job_duration', jobDuration);
+      formData.append('daily_commitment', dailyCommitment);
+      
+      // Add resume file
+      const resumeData: any = {
+        uri: resumeFile.uri,
+        type: resumeFile.mimeType || 'application/pdf',
+        name: resumeFile.name || 'resume.pdf',
+      };
+      formData.append('resume', resumeData);
+
+      // Send request to backend
+      const response = await fetch(`${API_URL}/api/v1/onboarding`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // Navigate to AI Process Page
+        navigation.navigate('AiProcess' as never);
+      } else {
+        Alert.alert('Error', result.message || 'Failed to process profile');
+      }
+    } catch (error) {
+      console.error('Error processing profile:', error);
+      Alert.alert(
+        'Error',
+        'Failed to connect to server. Please make sure the backend is running.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -150,11 +198,16 @@ const OnboardingPage = () => {
         </View>
 
         <TouchableOpacity
-          style={styles.processButton}
+          style={[styles.processButton, isLoading && styles.processButtonDisabled]}
           onPress={handleProcessProfile}
           activeOpacity={0.8}
+          disabled={isLoading}
         >
-          <Text style={styles.processButtonText}>Process Profile</Text>
+          {isLoading ? (
+            <ActivityIndicator color="#FFFFFF" size="small" />
+          ) : (
+            <Text style={styles.processButtonText}>Process Profile</Text>
+          )}
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />
@@ -262,6 +315,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 15,
     elevation: 10,
+  },
+  processButtonDisabled: {
+    backgroundColor: '#4A7BC8',
+    opacity: 0.7,
   },
   processButtonText: {
     fontSize: 18,

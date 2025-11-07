@@ -5,10 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import OnboardingPage from './src/screens/onboardingPage';
+import AiProcessPage from './src/screens/aiProcessPage';
 
 type RootStackParamList = {
   Welcome: undefined;
   Onboarding: undefined;
+  AiProcess: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -75,6 +77,11 @@ const App: FC = () => {
         <Stack.Screen
           name="Onboarding"
           component={OnboardingPage}
+          options={{ animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="AiProcess"
+          component={AiProcessPage}
           options={{ animation: 'fade' }}
         />
       </Stack.Navigator>
