@@ -63,16 +63,16 @@ const OnboardingPage = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" hidden={false} />
+      <StatusBar style="light" />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome to SkillSync</Text>
+          <Text style={styles.title}>Welcome Jumper!</Text>
           <Text style={styles.subtitle}>
-            Let's find the best Python jobs for you. Start by telling us what you're looking for.
+             Start by telling us what you're looking for.
           </Text>
         </View>
 
