@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import SideMenu from './sideMenu';
 import Tasks from './tasks';
@@ -17,7 +18,20 @@ const Upload = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
+      <LinearGradient
+        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      
+      <StatusBar style="light" />
       
       {/* Header */}
       <View style={styles.header}>
@@ -25,14 +39,14 @@ const Upload = () => {
           style={styles.menuButton}
           onPress={() => setMenuVisible(true)}
         >
-          <Ionicons name="menu" size={28} color="#000000" />
+          <Ionicons name="menu" size={28} color="#FFFFFF" />
         </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.tasksButton}
           onPress={() => setTasksVisible(true)}
         >
-          <Ionicons name="clipboard" size={28} color="#000000" />
+          <Ionicons name="clipboard" size={28} color="#06b6d4" />
         </TouchableOpacity>
       </View>
 
@@ -48,15 +62,28 @@ const Upload = () => {
         
         {/* Placeholder content */}
         <View style={styles.uploadCard}>
-          <Ionicons name="cloud-upload-outline" size={60} color="#5B8DEF" />
+          <LinearGradient
+            colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+          />
+          <Ionicons name="cloud-upload-outline" size={60} color="#06b6d4" />
           <Text style={styles.uploadText}>Upload Your Work</Text>
           <Text style={styles.uploadSubtext}>
             Share projects, code, or documents
           </Text>
           
-          <TouchableOpacity style={styles.uploadButton}>
-            <Ionicons name="add-circle" size={24} color="#FFFFFF" />
-            <Text style={styles.uploadButtonText}>Choose File</Text>
+          <TouchableOpacity>
+            <LinearGradient
+              colors={['#06b6d4', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.uploadButton}
+            >
+              <Ionicons name="add-circle" size={24} color="#FFFFFF" />
+              <Text style={styles.uploadButtonText}>Choose File</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -81,7 +108,6 @@ export default Upload;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
@@ -90,9 +116,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: 'rgba(6, 182, 212, 0.2)',
   },
   menuButton: {
     width: 40,
@@ -115,42 +140,48 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#000000',
+    color: '#06b6d4',
     marginBottom: 8,
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666666',
+    color: '#9ca3af',
     marginBottom: 40,
   },
   uploadCard: {
-    backgroundColor: '#F8F9FA',
     borderRadius: 16,
     padding: 40,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#E5E5E5',
+    borderColor: 'rgba(6, 182, 212, 0.3)',
     borderStyle: 'dashed',
+    overflow: 'hidden',
   },
   uploadText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#000000',
+    color: '#FFFFFF',
     marginTop: 20,
   },
   uploadSubtext: {
     fontSize: 14,
-    color: '#666666',
+    color: '#6b7280',
     marginTop: 8,
     marginBottom: 30,
   },
   uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#5B8DEF',
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 25,
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   uploadButtonText: {
     fontSize: 16,

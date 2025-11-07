@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -113,7 +114,7 @@ const AiProcessPage = () => {
     if (status === 'completed') {
       return (
         <View style={styles.stepIconCompleted}>
-          <Ionicons name="checkmark" size={20} color="#5B8DEF" />
+          <Ionicons name="checkmark" size={20} color="#06b6d4" />
         </View>
       );
     } else if (status === 'in-progress') {
@@ -129,6 +130,19 @@ const AiProcessPage = () => {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      
       <StatusBar style="light" />
       
       {/* Header */}
@@ -146,12 +160,23 @@ const AiProcessPage = () => {
       <View style={styles.content}>
         {/* Overall Progress */}
         <View style={styles.progressSection}>
+          <LinearGradient
+            colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+          />
           <View style={styles.progressHeader}>
             <Text style={styles.progressLabel}>Overall Progress</Text>
             <Text style={styles.progressPercentage}>{progress}%</Text>
           </View>
           <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
+            <LinearGradient
+              colors={['#06b6d4', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.progressBarFill, { width: `${progress}%` }]}
+            />
           </View>
         </View>
 
@@ -177,8 +202,14 @@ const AiProcessPage = () => {
 
         {/* Fun Fact Card */}
         <View style={styles.funFactCard}>
+          <LinearGradient
+            colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+          />
           <View style={styles.funFactIcon}>
-            <Ionicons name="bulb" size={28} color="#5B8DEF" />
+            <Ionicons name="bulb" size={28} color="#06b6d4" />
           </View>
           <View style={styles.funFactContent}>
             <Text style={styles.funFactTitle}>{funFact.title}</Text>
@@ -195,7 +226,6 @@ export default AiProcessPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   header: {
     flexDirection: 'row',
@@ -214,7 +244,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#06b6d4',
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   headerSpacer: {
     width: 40,
@@ -227,6 +260,11 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     marginBottom: 25,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(6, 182, 212, 0.2)',
+    overflow: 'hidden',
   },
   progressHeader: {
     flexDirection: 'row',
@@ -242,18 +280,24 @@ const styles = StyleSheet.create({
   progressPercentage: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#5B8DEF',
+    color: '#06b6d4',
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   progressBarContainer: {
     height: 8,
-    backgroundColor: '#1A2332',
+    backgroundColor: 'rgba(17, 24, 39, 0.8)',
     borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#5B8DEF',
     borderRadius: 4,
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
   },
   stepsContainer: {
     marginBottom: 20,
@@ -271,11 +315,15 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(91, 141, 239, 0.15)',
+    backgroundColor: 'rgba(6, 182, 212, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#5B8DEF',
+    borderColor: '#06b6d4',
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   stepIconInProgress: {
     width: 32,
@@ -285,27 +333,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#5B8DEF',
+    borderColor: '#06b6d4',
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   stepIconInProgressInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#5B8DEF',
+    backgroundColor: '#06b6d4',
   },
   stepIconPending: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#1A2332',
+    backgroundColor: 'rgba(17, 24, 39, 0.6)',
     borderWidth: 2,
-    borderColor: '#2A3A4A',
-  },
-  stepConnector: {
-    width: 2,
-    height: 40,
-    backgroundColor: '#1A2332',
-    marginTop: 4,
+    borderColor: 'rgba(75, 85, 99, 0.5)',
   },
   stepTitle: {
     flex: 1,
@@ -314,28 +360,32 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   stepTitleActive: {
-    color: '#5B8DEF',
+    color: '#06b6d4',
     fontWeight: '500',
   },
   stepTitlePending: {
-    color: '#6B7280',
+    color: '#6b7280',
   },
   funFactCard: {
     flexDirection: 'row',
-    backgroundColor: '#0F1923',
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#1A2A3A',
+    borderColor: 'rgba(6, 182, 212, 0.2)',
+    overflow: 'hidden',
   },
   funFactIcon: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(91, 141, 239, 0.15)',
+    backgroundColor: 'rgba(6, 182, 212, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   funFactContent: {
     flex: 1,
@@ -348,7 +398,7 @@ const styles = StyleSheet.create({
   },
   funFactText: {
     fontSize: 13,
-    color: '#9CA3AF',
+    color: '#9ca3af',
     lineHeight: 18,
   },
 });

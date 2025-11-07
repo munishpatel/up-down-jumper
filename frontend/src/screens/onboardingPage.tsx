@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as DocumentPicker from 'expo-document-picker';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -100,6 +101,7 @@ const OnboardingPage = () => {
           'Accept': 'application/json',
         },
       });
+      console.log('Response status:', response.status);
 
       const result = await response.json();
 
@@ -121,6 +123,19 @@ const OnboardingPage = () => {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      
       <StatusBar style="light" />
       <ScrollView
         style={styles.scrollView}
@@ -139,6 +154,12 @@ const OnboardingPage = () => {
 
           {jobLinks.map((link, i) => (
             <View key={i} style={styles.inputContainer}>
+              <LinearGradient
+                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+              />
               <Text style={styles.inputIcon}>🔗</Text>
               <TextInput
                 style={styles.input}
@@ -149,7 +170,7 @@ const OnboardingPage = () => {
                     ? 'Paste another job link (optional)'
                     : 'And another (optional)'
                 }
-                placeholderTextColor="#888"
+                placeholderTextColor="#6b7280"
                 value={link}
                 onChangeText={(text) => handleJobLinkChange(i, text)}
                 autoCapitalize="none"
@@ -167,6 +188,12 @@ const OnboardingPage = () => {
             onPress={handleResumeUpload}
             activeOpacity={0.7}
           >
+            <LinearGradient
+              colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+            />
             <Text style={styles.uploadIcon}>📄</Text>
             <Text style={styles.uploadText}>
               {resumeFile ? resumeFile.name : 'Upload your resume'}
@@ -179,11 +206,17 @@ const OnboardingPage = () => {
           <Text style={styles.sectionTitle}>Get a job in</Text>
 
           <View style={styles.inputContainer}>
+            <LinearGradient
+              colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+            />
             <Text style={styles.inputIcon}>📅</Text>
             <TextInput
               style={styles.input}
               placeholder="3"
-              placeholderTextColor="#888"
+              placeholderTextColor="#6b7280"
               value={jobDuration}
               onChangeText={setJobDuration}
               keyboardType="number-pad"
@@ -196,11 +229,17 @@ const OnboardingPage = () => {
           <Text style={styles.sectionTitle}>Daily Commitment</Text>
 
           <View style={styles.inputContainer}>
+            <LinearGradient
+              colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+            />
             <Text style={styles.inputIcon}>⏰</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g., 2 hours"
-              placeholderTextColor="#888"
+              placeholderTextColor="#6b7280"
               value={dailyCommitment}
               onChangeText={setDailyCommitment}
             />
@@ -208,16 +247,22 @@ const OnboardingPage = () => {
         </View>
 
         <TouchableOpacity
-          style={[styles.processButton, isLoading && styles.processButtonDisabled]}
           onPress={handleProcessProfile}
           activeOpacity={0.8}
           disabled={isLoading}
         >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            <Text style={styles.processButtonText}>Process Profile</Text>
-          )}
+          <LinearGradient
+            colors={isLoading ? ['#4b5563', '#6b7280'] : ['#06b6d4', '#3b82f6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.processButton}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              <Text style={styles.processButtonText}>Process Profile</Text>
+            )}
+          </LinearGradient>
         </TouchableOpacity>
 
         <View style={styles.bottomSpacer} />
@@ -231,7 +276,6 @@ export default OnboardingPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   scrollView: {
     flex: 1,
@@ -247,12 +291,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#06b6d4',
     marginBottom: 16,
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#B0B0B0',
+    color: '#9ca3af',
     lineHeight: 24,
   },
   section: {
@@ -267,17 +314,20 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     marginBottom: 12,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2A2A2A',
+    borderColor: 'rgba(6, 182, 212, 0.2)',
+    overflow: 'hidden',
   },
   inputIcon: {
     fontSize: 20,
     marginRight: 12,
+    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   input: {
     flex: 1,
@@ -286,22 +336,26 @@ const styles = StyleSheet.create({
   },
   inputSuffix: {
     fontSize: 16,
-    color: '#888',
+    color: '#6b7280',
     marginLeft: 8,
   },
   uploadContainer: {
-    backgroundColor: '#1A1A1A',
     borderRadius: 12,
     paddingVertical: 40,
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#2A2A2A',
+    borderColor: 'rgba(6, 182, 212, 0.3)',
+    borderStyle: 'dashed',
+    overflow: 'hidden',
   },
   uploadIcon: {
     fontSize: 48,
     marginBottom: 16,
+    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   uploadText: {
     fontSize: 18,
@@ -311,29 +365,27 @@ const styles = StyleSheet.create({
   },
   uploadSubtext: {
     fontSize: 14,
-    color: '#888',
+    color: '#6b7280',
   },
   processButton: {
-    backgroundColor: '#5B8DEF',
     paddingVertical: 18,
     paddingHorizontal: 32,
     borderRadius: 30,
     alignItems: 'center',
     marginTop: 20,
-    shadowColor: '#5B8DEF',
+    shadowColor: '#06b6d4',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 15,
     elevation: 10,
-  },
-  processButtonDisabled: {
-    backgroundColor: '#4A7BC8',
-    opacity: 0.7,
   },
   processButtonText: {
     fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   bottomSpacer: {
     height: 20,

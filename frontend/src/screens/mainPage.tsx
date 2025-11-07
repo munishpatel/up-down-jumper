@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,6 +26,19 @@ const MainPage = () => {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      
       <StatusBar style="light" />
       
       {/* Header */}
@@ -42,7 +56,7 @@ const MainPage = () => {
       {/* Content */}
       <View style={styles.content}>
         <View style={styles.successIcon}>
-          <Ionicons name="checkmark-circle" size={100} color="#5B8DEF" />
+          <Ionicons name="checkmark-circle" size={100} color="#06b6d4" />
         </View>
         
         <Text style={styles.title}>Roadmap Ready!</Text>
@@ -51,11 +65,17 @@ const MainPage = () => {
         </Text>
 
         <TouchableOpacity
-          style={styles.button}
           activeOpacity={0.8}
           onPress={() => navigation.navigate('Dashboard')}
         >
-          <Text style={styles.buttonText}>View My Roadmap</Text>
+          <LinearGradient
+            colors={['#06b6d4', '#3b82f6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>View My Roadmap</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </View>
@@ -67,7 +87,6 @@ export default MainPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   header: {
     flexDirection: 'row',
@@ -86,7 +105,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#06b6d4',
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
   headerSpacer: {
     width: 40,
@@ -99,29 +121,35 @@ const styles = StyleSheet.create({
   },
   successIcon: {
     marginBottom: 30,
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   title: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#06b6d4',
     marginBottom: 16,
     textAlign: 'center',
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: '#9ca3af',
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 40,
   },
   button: {
-    backgroundColor: '#5B8DEF',
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 30,
-    shadowColor: '#5B8DEF',
+    shadowColor: '#06b6d4',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 15,
     elevation: 10,
   },
@@ -129,5 +157,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
 });

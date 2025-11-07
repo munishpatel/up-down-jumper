@@ -7,6 +7,7 @@ import {
   Modal,
   Image,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
 interface SideMenuProps {
@@ -30,11 +31,18 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
         />
         
         <View style={styles.menuContainer}>
+          <LinearGradient
+            colors={['#1a1a2e', '#16213e', '#0f3460']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          
           {/* Profile Section */}
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               <View style={styles.profileImage}>
-                <Ionicons name="person" size={40} color="#5B8DEF" />
+                <Ionicons name="person" size={40} color="#06b6d4" />
               </View>
             </View>
             
@@ -47,17 +55,17 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
           {/* Menu Items */}
           <View style={styles.menuItems}>
             <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="person-outline" size={24} color="#000000" />
+              <Ionicons name="person-outline" size={24} color="#FFFFFF" />
               <Text style={styles.menuItemText}>Profile</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="document-text-outline" size={24} color="#000000" />
+              <Ionicons name="document-text-outline" size={24} color="#FFFFFF" />
               <Text style={styles.menuItemText}>Resume</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="settings-outline" size={24} color="#000000" />
+              <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
               <Text style={styles.menuItemText}>Settings</Text>
             </TouchableOpacity>
           </View>
@@ -65,7 +73,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
           {/* Logout Button */}
           <View style={styles.logoutSection}>
             <TouchableOpacity style={styles.logoutButton}>
-              <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
+              <Ionicons name="log-out-outline" size={24} color="#ef4444" />
               <Text style={styles.logoutText}>Log Out</Text>
             </TouchableOpacity>
           </View>
@@ -84,23 +92,22 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   menuContainer: {
     width: '80%',
-    backgroundColor: '#FFFFFF',
     paddingTop: 60,
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 10,
   },
   profileSection: {
     alignItems: 'center',
     paddingVertical: 30,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: 'rgba(6, 182, 212, 0.2)',
   },
   profileImageContainer: {
     marginBottom: 16,
@@ -109,21 +116,25 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: 'rgba(6, 182, 212, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 3,
-    borderColor: '#5B8DEF',
+    borderColor: '#06b6d4',
+    shadowColor: '#06b6d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   profileName: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#000000',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   profileBio: {
     fontSize: 14,
-    color: '#666666',
+    color: '#9ca3af',
     textAlign: 'center',
     paddingHorizontal: 20,
   },
@@ -140,12 +151,12 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#000000',
+    color: '#FFFFFF',
     marginLeft: 16,
   },
   logoutSection: {
     borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+    borderTopColor: 'rgba(6, 182, 212, 0.2)',
     padding: 20,
     paddingBottom: 40,
   },
@@ -158,7 +169,7 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF3B30',
+    color: '#ef4444',
     marginLeft: 16,
   },
 });

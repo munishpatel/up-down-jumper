@@ -8,6 +8,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
 interface TasksProps {
@@ -24,13 +25,26 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
       onRequestClose={onClose}
     >
       <View style={styles.container}>
-        <StatusBar style="dark" />
+        <LinearGradient
+          colors={['#1a1a2e', '#16213e', '#0f3460']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <LinearGradient
+          colors={['rgba(59, 130, 246, 0.08)', 'rgba(139, 92, 246, 0.05)', 'transparent']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        
+        <StatusBar style="light" />
         
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>My Tasks</Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Ionicons name="close" size={28} color="#000000" />
+            <Ionicons name="close" size={28} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
@@ -43,8 +57,14 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
             <Text style={styles.sectionTitle}>Today</Text>
             
             <View style={styles.taskCard}>
+              <LinearGradient
+                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+              />
               <View style={styles.taskCheckbox}>
-                <Ionicons name="checkmark-circle-outline" size={24} color="#5B8DEF" />
+                <Ionicons name="checkmark-circle-outline" size={24} color="#06b6d4" />
               </View>
               <View style={styles.taskContent}>
                 <Text style={styles.taskTitle}>Complete React Native course</Text>
@@ -53,8 +73,14 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
             </View>
 
             <View style={styles.taskCard}>
+              <LinearGradient
+                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+              />
               <View style={styles.taskCheckbox}>
-                <Ionicons name="checkmark-circle-outline" size={24} color="#5B8DEF" />
+                <Ionicons name="checkmark-circle-outline" size={24} color="#06b6d4" />
               </View>
               <View style={styles.taskContent}>
                 <Text style={styles.taskTitle}>Build portfolio project</Text>
@@ -67,8 +93,14 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
             <Text style={styles.sectionTitle}>This Week</Text>
             
             <View style={styles.taskCard}>
+              <LinearGradient
+                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+              />
               <View style={styles.taskCheckbox}>
-                <Ionicons name="ellipse-outline" size={24} color="#CCCCCC" />
+                <Ionicons name="ellipse-outline" size={24} color="#6b7280" />
               </View>
               <View style={styles.taskContent}>
                 <Text style={styles.taskTitle}>Learn TypeScript basics</Text>
@@ -77,8 +109,14 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
             </View>
 
             <View style={styles.taskCard}>
+              <LinearGradient
+                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+              />
               <View style={styles.taskCheckbox}>
-                <Ionicons name="ellipse-outline" size={24} color="#CCCCCC" />
+                <Ionicons name="ellipse-outline" size={24} color="#6b7280" />
               </View>
               <View style={styles.taskContent}>
                 <Text style={styles.taskTitle}>Complete coding challenge</Text>
@@ -89,10 +127,19 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
         </ScrollView>
 
         {/* Add Task Button */}
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="add-circle" size={24} color="#FFFFFF" />
-          <Text style={styles.addButtonText}>Add New Task</Text>
-        </TouchableOpacity>
+        <View style={styles.addButtonContainer}>
+          <TouchableOpacity>
+            <LinearGradient
+              colors={['#06b6d4', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.addButton}
+            >
+              <Ionicons name="add-circle" size={24} color="#FFFFFF" />
+              <Text style={styles.addButtonText}>Add New Task</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -103,7 +150,6 @@ export default Tasks;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
@@ -112,14 +158,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: 'rgba(6, 182, 212, 0.2)',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#000000',
+    color: '#06b6d4',
+    textShadowColor: 'rgba(6, 182, 212, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   closeButton: {
     width: 40,
@@ -139,18 +187,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#000000',
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   taskCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: 'rgba(6, 182, 212, 0.2)',
+    overflow: 'hidden',
   },
   taskCheckbox: {
     marginRight: 12,
@@ -161,23 +209,24 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#000000',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   taskTime: {
     fontSize: 14,
-    color: '#666666',
+    color: '#9ca3af',
+  },
+  addButtonContainer: {
+    marginHorizontal: 20,
+    marginBottom: 30,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#5B8DEF',
-    marginHorizontal: 20,
-    marginBottom: 30,
     paddingVertical: 16,
     borderRadius: 30,
-    shadowColor: '#5B8DEF',
+    shadowColor: '#06b6d4',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

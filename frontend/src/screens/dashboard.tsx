@@ -14,12 +14,12 @@ const Dashboard = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#000000',
-        tabBarInactiveTintColor: '#999999',
+        tabBarActiveTintColor: '#06b6d4',
+        tabBarInactiveTintColor: '#6b7280',
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#1a1a2e',
           borderTopWidth: 1,
-          borderTopColor: '#E5E5E5',
+          borderTopColor: 'rgba(6, 182, 212, 0.2)',
           height: 90,
           paddingBottom: 25,
           paddingTop: 10,
