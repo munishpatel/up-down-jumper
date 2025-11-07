@@ -12,9 +12,47 @@ import { Ionicons } from '@expo/vector-icons';
 import SideMenu from './sideMenu';
 import Tasks from './tasks';
 
+interface Project {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  skills: string;
+  timeSpent: string;
+  teammates: string;
+}
+
 const Projects = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [tasksVisible, setTasksVisible] = useState(false);
+
+  // Sample projects data matching the image
+  const projects: Project[] = [
+    {
+      id: '1',
+      title: 'RAG Model for Local-first Web',
+      subtitle: 'The Build Fellowship "Build Projects"',
+      skills: 'GenAI, RAG, PWA, CRDT\'s',
+      timeSpent: '20hrs',
+      teammates: 'Shivaji, Ruthwik',
+    },
+    {
+      id: '2',
+      title: 'Fine-tuning LLM Model with PEFT',
+      subtitle: 'MLH (Major League Hacking)',
+      skills: 'OpenAI, qLoRA, PEFT, Unsloth',
+      timeSpent: '20hrs',
+      teammates: 'Shivaji, Ruthwik',
+    },
+    {
+      id: '3',
+      title: 'CloudMart',
+      subtitle: 'Excalidraw.io',
+      skills: 'Hadoop, EC2, Cloud Runner, AWS',
+      timeSpent: '20hrs',
+      teammates: 'Shivaji, Ruthwik',
+    },
+  ];
 
   return (
     <View style={styles.container}>
@@ -57,23 +95,57 @@ const Projects = () => {
       >
         <Text style={styles.title}>Projects</Text>
         <Text style={styles.subtitle}>
-          Build your portfolio with hands-on projects
+          Build your portfolio with hands-on
         </Text>
         
-        {/* Placeholder content */}
-        <View style={styles.emptyState}>
-          <LinearGradient
-            colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-          />
-          <Ionicons name="bulb-outline" size={80} color="#06b6d4" />
-          <Text style={styles.emptyText}>No projects yet</Text>
-          <Text style={styles.emptySubtext}>
-            Recommended projects to build will appear here
-          </Text>
-        </View>
+        {/* Projects List */}
+        {projects.map((project) => (
+          <TouchableOpacity
+            key={project.id}
+            style={styles.projectCard}
+            activeOpacity={0.7}
+          >
+            <LinearGradient
+              colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+            />
+            
+            <View style={styles.projectContent}>
+              {/* Project Title */}
+              <Text style={styles.projectTitle}>{project.title}</Text>
+              
+              {/* Project Subtitle */}
+              {project.subtitle && (
+                <Text style={styles.projectSubtitle}>{project.subtitle}</Text>
+              )}
+              
+              {/* Skills */}
+              <View style={styles.projectDetail}>
+                <Text style={styles.detailLabel}>Skills: </Text>
+                <Text style={styles.detailValue}>{project.skills}</Text>
+              </View>
+              
+              {/* Metrics Section */}
+              <View style={styles.metricsSection}>
+                <Text style={styles.metricsTitle}>Metrics:</Text>
+                
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricNumber}>1. </Text>
+                  <Text style={styles.metricLabel}>Time Spent: </Text>
+                  <Text style={styles.metricValue}>{project.timeSpent}</Text>
+                </View>
+                
+                <View style={styles.metricItem}>
+                  <Text style={styles.metricNumber}>2. </Text>
+                  <Text style={styles.metricLabel}>Teammates: </Text>
+                  <Text style={styles.metricValue}>{project.teammates}</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
 
       {/* Side Menu */}
@@ -124,6 +196,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 32,
@@ -137,28 +210,69 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#9ca3af',
-    marginBottom: 40,
+    marginBottom: 24,
   },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 80,
-    borderRadius: 16,
+  projectCard: {
+    marginBottom: 20,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(6, 182, 212, 0.2)',
     overflow: 'hidden',
   },
-  emptyText: {
+  projectContent: {
+    padding: 20,
+  },
+  projectTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginTop: 20,
+    marginBottom: 8,
+    lineHeight: 24,
   },
-  emptySubtext: {
+  projectSubtitle: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#d1d5db',
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  projectDetail: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 16,
+  },
+  detailLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  detailValue: {
+    fontSize: 14,
+    color: '#d1d5db',
+    flex: 1,
+  },
+  metricsSection: {
     marginTop: 8,
-    textAlign: 'center',
-    paddingHorizontal: 20,
+  },
+  metricsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  metricItem: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  metricNumber: {
+    fontSize: 14,
+    color: '#d1d5db',
+  },
+  metricLabel: {
+    fontSize: 14,
+    color: '#d1d5db',
+  },
+  metricValue: {
+    fontSize: 14,
+    color: '#d1d5db',
   },
 });

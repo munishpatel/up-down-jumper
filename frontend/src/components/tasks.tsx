@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -16,7 +16,83 @@ interface TasksProps {
   onClose: () => void;
 }
 
+interface Task {
+  id: string;
+  title: string;
+  day: string;
+  completed: boolean;
+}
+
 const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
+  const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
+  const [tasks, setTasks] = useState<Task[]>([
+    // Day 1 Tasks
+    {
+      id: '1',
+      title: 'Watch an intro to vector databases & embeddings basics.',
+      day: 'Day 1',
+      completed: false,
+    },
+    {
+      id: '2',
+      title: 'Learn FAISS indexing: flat index vs IVF vs HNSW',
+      day: 'Day 1',
+      completed: false,
+    },
+    {
+      id: '3',
+      title: 'Set up Python env and load a small dataset for embedding tests.',
+      day: 'Day 1',
+      completed: false,
+    },
+    {
+      id: '4',
+      title: 'Search LinkedIn for "RAG Engineer / Vector DB Engineer" and follow 20 relevant profiles',
+      day: 'Day 1',
+      completed: false,
+    },
+    {
+      id: '5',
+      title: 'Follow up with 3 connections you made at "DataDog World tour"',
+      day: 'Day 1',
+      completed: false,
+    },
+    // Day 2 Tasks
+    {
+      id: '6',
+      title: 'Go through Pinecone basics: namespaces, upserts, queries.',
+      day: 'Day 2',
+      completed: false,
+    },
+    {
+      id: '7',
+      title: 'Study best practices for fast vector search in production.',
+      day: 'Day 2',
+      completed: false,
+    },
+    {
+      id: '8',
+      title: 'Test storing 200–500 embeddings in FAISS or Chroma locally.',
+      day: 'Day 2',
+      completed: false,
+    },
+    {
+      id: '9',
+      title: 'Send 5 personalized messages asking how professionals learned vector DBs.',
+      day: 'Day 2',
+      completed: false,
+    },
+  ]);
+
+  const toggleTaskCompletion = (taskId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const activeTasks = tasks.filter(task => !task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
+  const displayTasks = activeTab === 'active' ? activeTasks : completedTasks;
   return (
     <Modal
       animationType="slide"
@@ -48,82 +124,100 @@ const Tasks: React.FC<TasksProps> = ({ visible, onClose }) => {
           </TouchableOpacity>
         </View>
 
+        {/* Tabs */}
+        <View style={styles.tabsContainer}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'active' && styles.activeTab]}
+            onPress={() => setActiveTab('active')}
+          >
+            <Text style={[styles.tabText, activeTab === 'active' && styles.activeTabText]}>
+              Active ({activeTasks.length})
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'completed' && styles.activeTab]}
+            onPress={() => setActiveTab('completed')}
+          >
+            <Text style={[styles.tabText, activeTab === 'completed' && styles.activeTabText]}>
+              Completed ({completedTasks.length})
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Content */}
         <ScrollView 
           style={styles.content}
           contentContainerStyle={styles.contentContainer}
         >
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Today</Text>
-            
-            <View style={styles.taskCard}>
-              <LinearGradient
-                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
-              />
-              <View style={styles.taskCheckbox}>
-                <Ionicons name="checkmark-circle-outline" size={24} color="#06b6d4" />
-              </View>
-              <View style={styles.taskContent}>
-                <Text style={styles.taskTitle}>Complete React Native course</Text>
-                <Text style={styles.taskTime}>Due: 5:00 PM</Text>
-              </View>
-            </View>
+          {/* Group tasks by day */}
+          {['Day 1', 'Day 2'].map((day) => {
+            const dayTasks = displayTasks.filter(task => task.day === day);
+            if (dayTasks.length === 0) return null;
 
-            <View style={styles.taskCard}>
-              <LinearGradient
-                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
-              />
-              <View style={styles.taskCheckbox}>
-                <Ionicons name="checkmark-circle-outline" size={24} color="#06b6d4" />
+            return (
+              <View key={day} style={styles.section}>
+                <Text style={styles.sectionTitle}>{day}</Text>
+                
+                {dayTasks.map((task) => (
+                  <TouchableOpacity
+                    key={task.id}
+                    style={styles.taskCard}
+                    onPress={() => toggleTaskCompletion(task.id)}
+                    activeOpacity={0.7}
+                  >
+                    <LinearGradient
+                      colors={
+                        task.completed
+                          ? ['rgba(6, 182, 212, 0.15)', 'rgba(6, 182, 212, 0.05)']
+                          : ['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']
+                      }
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+                    />
+                    <TouchableOpacity
+                      style={styles.taskCheckbox}
+                      onPress={() => toggleTaskCompletion(task.id)}
+                    >
+                      <Ionicons
+                        name={task.completed ? 'checkmark-circle' : 'ellipse-outline'}
+                        size={24}
+                        color={task.completed ? '#06b6d4' : '#6b7280'}
+                      />
+                    </TouchableOpacity>
+                    <View style={styles.taskContent}>
+                      <Text
+                        style={[
+                          styles.taskTitle,
+                          task.completed && styles.taskTitleCompleted,
+                        ]}
+                      >
+                        {task.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
               </View>
-              <View style={styles.taskContent}>
-                <Text style={styles.taskTitle}>Build portfolio project</Text>
-                <Text style={styles.taskTime}>Due: 8:00 PM</Text>
-              </View>
-            </View>
-          </View>
+            );
+          })}
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>This Week</Text>
-            
-            <View style={styles.taskCard}>
-              <LinearGradient
-                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
+          {displayTasks.length === 0 && (
+            <View style={styles.emptyState}>
+              <Ionicons
+                name={activeTab === 'active' ? 'checkmark-done-circle-outline' : 'list-outline'}
+                size={80}
+                color="#06b6d4"
               />
-              <View style={styles.taskCheckbox}>
-                <Ionicons name="ellipse-outline" size={24} color="#6b7280" />
-              </View>
-              <View style={styles.taskContent}>
-                <Text style={styles.taskTitle}>Learn TypeScript basics</Text>
-                <Text style={styles.taskTime}>Due: Friday</Text>
-              </View>
+              <Text style={styles.emptyText}>
+                {activeTab === 'active' ? 'All tasks completed!' : 'No completed tasks yet'}
+              </Text>
+              <Text style={styles.emptySubtext}>
+                {activeTab === 'active'
+                  ? 'Great job! Add new tasks to continue learning.'
+                  : 'Complete tasks to see them here.'}
+              </Text>
             </View>
-
-            <View style={styles.taskCard}>
-              <LinearGradient
-                colors={['rgba(17, 24, 39, 0.6)', 'rgba(31, 41, 55, 0.6)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
-              />
-              <View style={styles.taskCheckbox}>
-                <Ionicons name="ellipse-outline" size={24} color="#6b7280" />
-              </View>
-              <View style={styles.taskContent}>
-                <Text style={styles.taskTitle}>Complete coding challenge</Text>
-                <Text style={styles.taskTime}>Due: Saturday</Text>
-              </View>
-            </View>
-          </View>
+          )}
         </ScrollView>
 
         {/* Add Task Button */}
@@ -175,6 +269,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tabsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(6, 182, 212, 0.2)',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(17, 24, 39, 0.6)',
+    borderWidth: 1,
+    borderColor: 'rgba(6, 182, 212, 0.2)',
+    alignItems: 'center',
+  },
+  activeTab: {
+    backgroundColor: 'rgba(6, 182, 212, 0.2)',
+    borderColor: '#06b6d4',
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#9ca3af',
+  },
+  activeTabText: {
+    color: '#06b6d4',
+  },
   content: {
     flex: 1,
   },
@@ -192,7 +316,7 @@ const styles = StyleSheet.create({
   },
   taskCard: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -202,19 +326,39 @@ const styles = StyleSheet.create({
   },
   taskCheckbox: {
     marginRight: 12,
+    marginTop: 2,
   },
   taskContent: {
     flex: 1,
   },
   taskTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '500',
     color: '#FFFFFF',
-    marginBottom: 4,
+    lineHeight: 22,
   },
-  taskTime: {
-    fontSize: 14,
+  taskTitleCompleted: {
     color: '#9ca3af',
+    textDecorationLine: 'line-through',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 80,
+    paddingHorizontal: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginTop: 8,
+    textAlign: 'center',
   },
   addButtonContainer: {
     marginHorizontal: 20,
