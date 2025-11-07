@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import SideMenu from './sideMenu';
 import Tasks from './tasks';
+import { useVideos } from '../context/VideosContext';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -23,30 +24,14 @@ const HEADER_HEIGHT = 103; // paddingTop (60) + paddingBottom (15) + content (28
 const TAB_BAR_HEIGHT = 90; // From dashboard.tsx tabBarStyle
 const VIDEO_HEIGHT = SCREEN_HEIGHT - HEADER_HEIGHT - TAB_BAR_HEIGHT;
 
-// Video data
-const videos = [
-  {
-    id: '1',
-    uri: require('../../assets/video1.mp4'),
-    title: 'Learning Byte 1',
-    description: 'Quick learning content',
-  },
-  {
-    id: '2',
-    uri: require('../../assets/video2.mp4'),
-    title: 'Learning Byte 2',
-    description: 'Micro-lesson content',
-  },
-  {
-    id: '3',
-    uri: require('../../assets/video3.mp4'),
-    title: 'Learning Byte 3',
-    description: 'Educational snippet',
-  },
-];
-
 interface VideoItemProps {
-  item: typeof videos[0];
+  item: {
+    id: string;
+    uri: any;
+    title: string;
+    description: string;
+    isUserUploaded?: boolean;
+  };
   isActive: boolean;
   videoRef: React.RefObject<Video | null>;
 }
@@ -140,15 +125,23 @@ const VideoItem: React.FC<VideoItemProps> = ({ item, isActive, videoRef }) => {
 };
 
 const Bytes = () => {
+  const { videos } = useVideos();
   const [menuVisible, setMenuVisible] = useState(false);
   const [tasksVisible, setTasksVisible] = useState(false);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(true);
   
-  // Create refs for all videos
-  const videoRefs = useRef<Array<React.RefObject<Video | null>>>(
-    videos.map(() => React.createRef<Video | null>())
-  );
+  // Create refs for all videos - use a stable reference that updates with videos
+  const videoRefs = useRef<Map<string, React.RefObject<Video | null>>>(new Map());
+
+  // Ensure we have refs for all videos
+  useEffect(() => {
+    videos.forEach((video) => {
+      if (!videoRefs.current.has(video.id)) {
+        videoRefs.current.set(video.id, React.createRef<Video | null>());
+      }
+    });
+  }, [videos]);
 
   const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
     if (viewableItems.length > 0) {
@@ -170,7 +163,7 @@ const Bytes = () => {
         // Screen is unfocused - pause all videos immediately
         setIsFocused(false);
         videoRefs.current.forEach((ref) => {
-          if (ref.current) {
+          if (ref && ref.current) {
             ref.current.pauseAsync().catch(() => {});
             ref.current.setIsMutedAsync(true).catch(() => {});
           }
@@ -205,13 +198,19 @@ const Bytes = () => {
       {/* Video List */}
       <FlatList
         data={videos}
-        renderItem={({ item, index }) => (
-          <VideoItem 
-            item={item} 
-            isActive={index === activeVideoIndex && isFocused} 
-            videoRef={videoRefs.current[index]}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          const ref = videoRefs.current.get(item.id) || React.createRef<Video | null>();
+          if (!videoRefs.current.has(item.id)) {
+            videoRefs.current.set(item.id, ref);
+          }
+          return (
+            <VideoItem 
+              item={item} 
+              isActive={index === activeVideoIndex && isFocused} 
+              videoRef={ref}
+            />
+          );
+        }}
         keyExtractor={(item) => item.id}
         pagingEnabled
         showsVerticalScrollIndicator={false}
